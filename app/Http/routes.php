@@ -11,6 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+use App\Todo;
+
+Route::get('/api/todos', function () {
+    $todos =  Todo::all()->toArray(); 
+    return response()->json($todos);
 });
+Route::resource('todo', 'TodoController');
