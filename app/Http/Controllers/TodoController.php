@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Todo;
-use Cache;
+use Redis;
 
 
 
@@ -21,11 +21,14 @@ class TodoController extends Controller
     public function index()
     {
         //return view('todo.index', ['todos' => Todo::all()]);
+        $redis = Redis::connection();
         $key = 'todo_all';
-        $todos = Cache::get($key);
+        $todos = $redis->get($key);
         if(is_null($todos)){
           $todos = Todo::all();
-          Cache::put($key, $todos, 10);
+          $redis->set($key, serialize($todos));
+        }else{
+          $todos = unserialize($todos);
         }
         return view('todo.index', ['todos' => $todos]);
     }
