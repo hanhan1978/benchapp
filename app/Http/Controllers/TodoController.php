@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Todo;
+use Cache;
 
 
 
@@ -19,7 +20,14 @@ class TodoController extends Controller
      */
     public function index()
     {
-        return view('todo.index', ['todos' => Todo::all()]);
+        //return view('todo.index', ['todos' => Todo::all()]);
+        $key = 'todo_all';
+        $todos = Cache::get($key);
+        if(is_null($todos)){
+          $todos = Todo::all();
+          Cache::put($key, $todos, 10);
+        }
+        return view('todo.index', ['todos' => $todos]);
     }
 
     /**
