@@ -20,17 +20,7 @@ class TodoController extends Controller
      */
     public function index()
     {
-        //return view('todo.index', ['todos' => Todo::all()]);
-        $redis = Redis::connection();
-        $key = 'todo_all';
-        $todos = $redis->get($key);
-        if(is_null($todos)){
-          $todos = Todo::all();
-          $redis->set($key, serialize($todos));
-        }else{
-          $todos = unserialize($todos);
-        }
-        return view('todo.index', ['todos' => $todos]);
+        return view('todo.index', ['todos' => Todo::all()]);
     }
 
     /**
